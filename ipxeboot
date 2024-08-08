@@ -1,0 +1,15 @@
+#!/usr/bin/expect -f
+
+spawn telnet localhost 4444
+
+expect "Press Ctrl-B for the iPXE command line"
+send "\x02"
+
+expect "iPXE> "
+send "dhcp\n"
+
+expect "...... ok"
+expect "iPXE> "
+send "chain http://10.0.2.2/boot.ipxe\n"
+
+expect "sources/boot.wim... ok"

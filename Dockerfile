@@ -26,10 +26,10 @@ ARG ISO_URL=https://software-download.microsoft.com/download/pr/17763.737.190906
 RUN wget "$ISO_URL" -O /images/cdrom.iso && \
     7z x /images/cdrom.iso -o/images/iso && rm /images/cdrom.iso
 ADD https://github.com/PowerShell/Win32-OpenSSH/releases/download/v9.5.0.0p1-Beta/OpenSSH-Win64.zip /images/iso/OpenSSH-Win64.zip
-ADD https://download.visualstudio.microsoft.com/download/pr/2d6bb6b2-226a-4baa-bdec-798822606ff1/8494001c276a4b96804cde7829c04d7f/ndp48-x86-x64-allos-enu.exe /images/iso/ndp48-x86-x64-allos-enu.exe
 ADD autounattend.xml /images/iso/autounattend.xml
 ADD ipxeboot /ipxeboot
 ADD setup.sh /setup.sh
+ADD runvm.sh /runvm.sh
 ADD run.sh /run.sh
 ADD https://raw.githubusercontent.com/mvidner/sendkeys/master/sendkeys /bin/sendkeys
 RUN chmod +x /bin/sendkeys && apk add ruby
@@ -41,6 +41,8 @@ ARG NIC_MODEL
 
 RUN /setup.sh
 
-EXPOSE 22 3001 3389 8080
+EXPOSE 2222 3001 3389 8080
+
+RUN /run.sh powershell.exe -Command "\$ProgressPreference = 'SilentlyContinue'; Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1')); shutdown /s /t 0"
 
 ENTRYPOINT ["/run.sh"]

@@ -348,25 +348,21 @@
 					<Order>71</Order>
 					<Path>netsh.exe advfirewall firewall add rule name="OpenSSH Server" protocol=TCP dir=in localport=22 action=allow</Path>
 				</RunSynchronousCommand>
-                                <RunSynchronousCommand wcm:action="add">
-					<Order>72</Order>
-					<Path>powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Set-SmbClientConfiguration -EnableInsecureGuestLogons $true -Force"</Path>
-				</RunSynchronousCommand>
-				<!--<RunSynchronousCommand wcm:action="add">
-					<Order>73</Order>
-					<Path>cmd.exe /c "net use S: \\10.0.2.4\qemu"</Path>
-				</RunSynchronousCommand>-->
 				<RunSynchronousCommand wcm:action="add">
-					<Order>73</Order>
+					<Order>72</Order>
 					<Path>cmd.exe /c "curl -Lo C:\OpenSSH-Win64.zip http://10.0.2.2/OpenSSH-Win64.zip"</Path>
 				</RunSynchronousCommand>
                                 <RunSynchronousCommand wcm:action="add">
-					<Order>74</Order>
+					<Order>73</Order>
 					<Path>powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Expand-Archive -LiteralPath C:\OpenSSH-Win64.zip -DestinationPath 'C:\Program Files'"</Path>
 				</RunSynchronousCommand>
                                 <RunSynchronousCommand wcm:action="add">
+					<Order>74</Order>
+					<Path>powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "cd 'C:\Program Files\OpenSSH-Win64'; .\install-sshd.ps1; Set-Service sshd -StartupType Automatic"</Path>
+				</RunSynchronousCommand>
+                                <RunSynchronousCommand wcm:action="add">
 					<Order>75</Order>
-					<Path>powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "cd 'C:\Program Files\OpenSSH-Win64'; &amp; .\install-sshd.ps1; Set-Service sshd -StartupType Automatic"</Path>
+					<Path>cmd.exe /c "timeout 180"</Path>
 				</RunSynchronousCommand>
 			</RunSynchronous>
 		</component>
@@ -426,31 +422,15 @@
 				</SynchronousCommand>
 				<SynchronousCommand wcm:action="add">
 					<Order>2</Order>
-					<CommandLine>cmd.exe /c "timeout 120"</CommandLine>
+					<CommandLine>cmd.exe /c "timeout 300"</CommandLine>
 				</SynchronousCommand>
 				<SynchronousCommand wcm:action="add">
 					<Order>3</Order>
-					<CommandLine>powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Set-SmbClientConfiguration -EnableInsecureGuestLogons $true -Force"</CommandLine>
+					<CommandLine>powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "cd 'C:\Program Files\OpenSSH-Win64'; .\install-sshd.ps1; Set-Service sshd -StartupType Automatic"</CommandLine>
 				</SynchronousCommand>
 				<SynchronousCommand wcm:action="add">
 					<Order>4</Order>
-					<CommandLine>cmd.exe /c "timeout 60"</CommandLine>
-				</SynchronousCommand>
-				<SynchronousCommand wcm:action="add">
-					<Order>5</Order>
-					<CommandLine>cmd.exe /c "\\10.0.2.4\qemu\ndp48-x86-x64-allos-enu.exe /q"</CommandLine>
-				</SynchronousCommand>
-				<SynchronousCommand wcm:action="add">
-					<Order>6</Order>
-					<CommandLine>cmd.exe /c "timeout 180"</CommandLine>
-				</SynchronousCommand>
-				<SynchronousCommand wcm:action="add">
-					<Order>7</Order>
-					<CommandLine>powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "cd 'C:\Program Files\OpenSSH-Win64'; &amp; .\install-sshd.ps1; Set-Service sshd -StartupType Automatic"</CommandLine>
-				</SynchronousCommand>
-				<SynchronousCommand wcm:action="add">
-					<Order>8</Order>
-					<CommandLine>cmd.exe /c "timeout 300 &amp;&amp; shutdown /s"</CommandLine>
+					<CommandLine>cmd.exe /c "timeout 300 &amp;&amp; del /f /q /a c:\OpenSSH-Win64.zip &amp;&amp; shutdown /s"</CommandLine>
 				</SynchronousCommand>
 			</FirstLogonCommands>
 		</component>

@@ -43,6 +43,8 @@ RUN /setup.sh
 
 EXPOSE 2222 3001 3389 8080
 
-RUN /run.sh powershell.exe -Command "\$ProgressPreference = 'SilentlyContinue'; Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1')); shutdown /s /t 0"
+RUN /run.sh powershell.exe -Command "\$ProgressPreference = 'SilentlyContinue'; Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1')); Start-Sleep -s 180; shutdown /s /t 0"
+
+#RUN /run.sh powershell.exe -Command "choco install -yfd git vim busybox visualstudio2022community visualstudio2022-workload-nativegame legendary; shutdown /s /t 0"
 
 ENTRYPOINT ["/run.sh"]
